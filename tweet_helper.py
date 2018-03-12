@@ -1,24 +1,26 @@
 from __future__ import print_function
 from builtins import input  # python2.raw_input = python3.input
 
-
+# stdlib
 import argparse
-import twython
+import json
 import os
-import sys
 import pprint
+# import sys
 
+# pypi
+import twython
 
-__VERSION__ = '0.0.1'
-
-
-API_KEY = os.getenv('TWEET_HELPER__API_KEY')
-API_SECRET = os.getenv('TWEET_HELPER__API_SECRET')
-USER_TOKEN = os.getenv('TWEET_HELPER__USER_TOKEN')
-USER_SECRET = os.getenv('TWEET_HELPER__USER_SECRET')
 
 # ==============================================================================
 
+__VERSION__ = '0.0.1'
+API_KEY = os.getenv('TWEET_HELPER__API_KEY', None)
+API_SECRET = os.getenv('TWEET_HELPER__API_SECRET', None)
+USER_TOKEN = os.getenv('TWEET_HELPER__USER_TOKEN', None)
+USER_SECRET = os.getenv('TWEET_HELPER__USER_SECRET', None)
+
+# ==============================================================================
 
 
 def go_commandline():
@@ -30,13 +32,13 @@ def go_commandline():
     parser = argparse.ArgumentParser(description='Twitter Commandline Interface')
     parser.add_argument('-a',
                         '--action',
-                        type = str,
-                        help = 'What action? %s' % str(_valid_actions)
+                        type=str,
+                        help='What action? %s' % str(_valid_actions)
                         )
     parser.add_argument('-m',
                         '--message',
-                        type = str,
-                        help = 'What message? %s'
+                        type=str,
+                        help='What message? %s'
                         )
     args = parser.parse_args()
     if not args.action or (args.action not in _valid_actions):
@@ -44,16 +46,31 @@ def go_commandline():
     if args.action == 'TWEET':
         if not args.message:
             raise ValueError("Missing message for `TWEET`")
-    
+
     if args.action == 'AUTH':
+        # this is not a json wrapped result.
         _go_auth()
     elif args.action == 'VERIFY':
-        _go_verify()
+        try:
+            result = new_JsonResult()
+            api_result = _go_verify()
+            result['status'] = 'success'
+            result['api_result'] = api_result
+        except Exception as e:
+            result['error'] = str(e)
+        print(json.dumps(result))
     elif args.action == 'TWEET':
-        _go_tweet(args.message)
+        try:
+            result = new_JsonResult()
+            _go_tweet(args.message)
+            result['status'] = 'success'
+            result['api_result'] = api_result
+        except Exception as e:
+            result['error'] = str(e)
+        print(json.dumps(result))
     else:
         raise ValueError("unsupported")
-    
+
 
 def _go_auth():
     """
@@ -61,12 +78,12 @@ def _go_auth():
     """
     twitterApp = twython.Twython(API_KEY, API_SECRET)
     auth = twitterApp.get_authentication_tokens()
-    
+
     # auth will have the following data:
     # {'auth_url': 'https://api.twitter.com/oauth/authenticate?oauth_token=OAUTH_TOKEN}',
     #  'oauth_callback_confirmed': u'true',
     #  'oauth_token': u'OAUTH_TOKEN',
-    #  'oauth_token_secret': u'OAUTH_SECRET'}    
+    #  'oauth_token_secret': u'OAUTH_SECRET'}
 
     print("")
     print("In a web-browser, visit the following url to authorize this application:")
@@ -77,7 +94,7 @@ def _go_auth():
     oauth_verifier = oauth_verifier.strip()
     twitterUser = twython.Twython(API_KEY, API_SECRET, auth['oauth_token'], auth['oauth_token_secret'])
     credentials = twitterUser.get_authorized_tokens(oauth_verifier)
-    
+
     print("============================")
     print("AUTH SUCCESS")
     print("============================")
@@ -90,7 +107,8 @@ def _go_auth():
     print(" - - - - - - - - - - - - - -")
     _credentials = ("auth = %s" % pprint.pformat(credentials)).split('\n')
     for _idx, _line in enumerate(_credentials):
-        if _idx == 0: continue
+        if _idx == 0:
+            continue
         _credentials[_idx] = '       ' + _line
     _credentials = '\n'.join(_credentials)
     print(_credentials)
@@ -105,12 +123,8 @@ def _go_verify():
     Verifies Credentials
     """
     twitterUser = new_TwitterUserClient()
-    result = twitterUser.verify_credentials()
-    print("============================")
-    print("AUTH VALID")
-    print("============================")
-    pprint.pprint(result)
-    print("============================")
+    api_result = twitterUser.verify_credentials()
+    return api_result
 
 
 def _go_tweet(message):
@@ -120,16 +134,21 @@ def _go_tweet(message):
     if len(message) > 240:
         raise ValueError("message must be 240 chars or less")
     twitterUser = new_TwitterUserClient()
-    result = twitterUser.update_status(status=message)
-    print("============================")
-    print("TWEETED")
-    print("============================")
-    pprint.pprint(result)
-    print("============================")
+    api_result = twitterUser.update_status(status=message)
+    return api_result
+
+
+# ==============================================================================
+
+
+def new_JsonResult():
+    return {'status': 'error', }
 
 
 def new_TwitterUserClient():
     """generates a new Twython client for the user"""
+    if not all((API_KEY, API_SECRET, USER_TOKEN, USER_SECRET)):
+        raise ValueError("Must set all of: API_KEY, API_SECRET, USER_TOKEN, USER_SECRET")
     twitterUser = twython.Twython(API_KEY, API_SECRET, USER_TOKEN, USER_SECRET)
     return twitterUser
 
@@ -139,6 +158,9 @@ def api_tweet(message):
     twitterUser = new_TwitterUserClient()
     result = twitterUser.update_status(status=message)
     return result
+
+
+# ==============================================================================
 
 
 if __name__ == '__main__':

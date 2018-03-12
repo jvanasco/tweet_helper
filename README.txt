@@ -90,42 +90,55 @@ Which look like:
 	source credentials.bash
 	python tweet_helper.py -a VERIFY
 
-If the credentials work, you'll see the following:
+If the credentials don't work, you'll see the following:
 
-	============================
-	AUTH VALID
-	============================
-	{
-	***profile dict***
-	}
-	============================
+	{'status': 'error', 'error': 'Twitter API returned a 400 (Bad Request), Bad Authentication data.'}
 
-If the credentials failed, Twython will raise an error.
+Notice how that's JSON? Yep, you can parse it.
+
+If the credentials work, the payload will be:
+
+	{'status': 'success', 'api_result': {}, }
+	
+The value of `api_result` will be the api result of twitter's validation, which is twitter profile data for the authenticating user.
 
 
-TWEET SOMETHING
-==============================
+
+TWEET SOMETHING ON THE COMMANDLINE
+==================================
 
 You can now tweet something off the commandline
 
 	source credentials.bash
 	python tweet_helper.py -a TWEET -m "test yes it is a test http://example.com 'punctuation' \"other punctuation\""
 
+On failure, an error is raised by Twython:
+
+	{'status': 'error', 'error': 'Twitter API returned a 400 (Bad Request), Bad Authentication data.'}
+
+Notice how that's JSON? Yep, you can parse it.
+
 On success, we'll see:
 
-	============================
-	TWEETED
-	============================
-	{
-	***tweet dict***
-	}
-	============================
+	{'status': 'success', 'api_result': {}, }
 
-On failure, an error is raised by Twython.
+The value of `api_result` will be the twitter api response for UPDATE STATUS which is a dict representing the newly formed tweet.
+
+
+
+TWEET SOMETHING FROM AN APP
+==================================
 
 If you'd like to tweet from an app...
 
-
 	from tweet_helper import api_tweet
-	
+
 	api_tweet(message="Tweet me!")
+
+If you want more control...
+
+	from tweet_helper import new_TwitterUserClient
+
+	twitterUser = new_TwitterUserClient()
+	twitterUser.update_status(status="Tweet me!")
+
