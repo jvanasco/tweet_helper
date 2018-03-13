@@ -62,7 +62,7 @@ def go_commandline():
     elif args.action == 'TWEET':
         try:
             result = new_JsonResult()
-            _go_tweet(args.message)
+            api_result = _go_tweet(args.message)
             result['status'] = 'success'
             result['api_result'] = api_result
         except Exception as e:
