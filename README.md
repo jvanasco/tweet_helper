@@ -9,7 +9,7 @@ The package is a single file, which expects twitter credentials stuffed into the
 
 The package can be imported into a Python process for tweeting, but was designed to enable tweeting off a terminal prompt so any release process can invoke it.
 
-    python tweet_helper.py -a TWEET -m "i tweeted this off the commandline using tweet_helper"
+    python tweet_helper.py -a TWEET -m 'i tweeted this off the commandline using tweet_helper!'
 
 This package is pre-release and be available on PyPi once the API is locked down.
 
