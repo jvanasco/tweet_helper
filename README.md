@@ -3,18 +3,51 @@ About
 
 This package is designed to quickly tweet things.
 
-It was specifically designed to enable Mike Bayer of SqlAlchemy to automate tweets as part of his build/release process for SqlAlchemy.  Mike needed that functionality, and I needed to read his very important tweets.
+It was specifically designed to enable Mike Bayer to automate release announcements via Tweets as part of his build/release process for SqlAlchemy.  Mike needed that functionality, and I needed to read his (very important) tweets.
 
-The package is a single file, which expects twitter credentials stuffed into the os environment, to wrap the Twython library.
+The package is a single file and wraps the Twython library.  It expects twitter credentials stuffed into the os environment in a certain way.
 
 The package can be imported into a Python process for tweeting, but was designed to enable tweeting off a terminal prompt so any release process can invoke it.
 
     python tweet_helper.py -a TWEET -m 'i tweeted this off the commandline using tweet_helper!'
 
-This package is pre-release and be available on PyPi once the API is locked down.
+There are full-fledged commandline twitter clients. This is not one of them. This project's goal is to simplify tweeting from the commandline.
+
+This package is available on PyPi as `tweet_helper`.
 
 Oh and yes there are tests.
 
+
+RELEASE INFO / STRATEGY
+==================================
+
+`v0.0.1` is the first release.
+
+No breaking changes should be introduced until the next minor release `v0.1.0`.
+
+It would probably be best to pin dependencies to `tweet_helper<0.1.0`
+
+
+INSTALLATION
+==================================
+
+Install via pip, or another package manager if you want...
+
+Python 2.7
+
+    pip install tweet_helper
+
+Python 3
+
+    pip3 install tweet_helper
+
+
+OR just download the file and invoke it as you wish.
+
+That might be easier in some situations.
+
+
+	
 SETUP
 ======================================
 
@@ -36,12 +69,37 @@ To start:
 
     cp credentials.bash_template credentials.bash
 
+This strategy lets our applications use the credentials, and we don't have to leave them on a filesystem or pass them along as command args which can be read.
+
+
+!! IMPORTANT !!
+---------------
+
+The `credentials.bash` file contains very sensitive information.
+
+It should NEVER be checked into source control or left lying around in plaintext.
+
+This information can be used to compromise your Twitter Account and your Twitter Application.
+
+If you store this data, it should be strongly encrypted - not plaintext. 
+
+I like using `GPG` and the `blackbox` wrapper (https://github.com/StackExchange/blackbox), which can automate decryption.
+
+If you're using `ansible`, use a Vault (https://docs.ansible.com/ansible/2.4/vault.html)
+
+There are many widely available tools for encryption of passcodes and tokens.  
+
+DON'T BE STUPID, ENCRYPT.
+
+Also be sure to `ignore` the plaintext version of this file and only allow the encrypted version into your source control.
+
+
 SETUP APPLICATION CREDENTIALS
 ==============================
 
 To create application credentials, visit https://apps.twitter.com and create a new app.
 
-Copy/Paste the following into your `credentials.bash`` file
+Copy/Paste the following into your `credentials.bash` file
 
 * "API KEY" or "APP KEY" goes into `TWEET_HELPER__API_KEY`
 * "API SECRET" or "APP SECRET" goes into `TWEET_HELPER__API_SECRET`
@@ -145,7 +203,7 @@ The value of `api_result` will be the twitter api response for UPDATE STATUS whi
 
 
 TWEET SOMETHING FROM AN APP
-==================================
+=================================
 
 If you'd like to tweet from an app...
 
@@ -160,3 +218,9 @@ If you want more control...
     twitterUser = new_TwitterUserClient()
     twitterUser.update_status(status="Tweet me!")
 
+
+TODO
+================================
+
+[] Tests for the authentication flow.
+[] A bin or some trick to fake the `tweet_helper` executable into a user's path.

@@ -14,7 +14,12 @@ import twython
 
 # ==============================================================================
 
+# NOTE
+#
+# docs are available on https://github.com/jvanasco/tweet_helper
+#
 __VERSION__ = '0.0.1'
+
 API_KEY = os.getenv('TWEET_HELPER__API_KEY', None)
 API_SECRET = os.getenv('TWEET_HELPER__API_SECRET', None)
 USER_TOKEN = os.getenv('TWEET_HELPER__USER_TOKEN', None)
@@ -25,8 +30,11 @@ USER_SECRET = os.getenv('TWEET_HELPER__USER_SECRET', None)
 
 def go_commandline():
     """
+    The commandline interface.
     EXAMPLES:
-        python __init__.py -a AUTH
+        python tweet_helper.py -a AUTH
+        python tweet_helper.py -a VERIFY
+        python tweet_helper.py -a TWEET -m 'i tweeted this off the commandline using tweet_helper!'
     """
     _valid_actions = ('AUTH', 'VERIFY', 'TWEET')
     parser = argparse.ArgumentParser(description='Twitter Commandline Interface')
@@ -51,30 +59,37 @@ def go_commandline():
         # this is not a json wrapped result.
         _go_auth()
     elif args.action == 'VERIFY':
-        try:
-            result = new_JsonResult()
-            api_result = _go_verify()
-            result['status'] = 'success'
-            result['api_result'] = api_result
-        except Exception as e:
-            result['error'] = str(e)
-        print(json.dumps(result))
+        _print_jsonified_api_result(_go_verify)
     elif args.action == 'TWEET':
-        try:
-            result = new_JsonResult()
-            api_result = _go_tweet(args.message)
-            result['status'] = 'success'
-            result['api_result'] = api_result
-        except Exception as e:
-            result['error'] = str(e)
-        print(json.dumps(result))
+        _print_jsonified_api_result(_go_tweet, args.message)
     else:
         raise ValueError("unsupported")
 
 
+def _print_jsonified_api_result(api_call, *args):
+    """
+    wrapper for api call, `print()` the value as a json doc
+    """
+    result = new_JsonResult()
+    try:
+        api_result = api_call(*args)
+        result['status'] = 'success'
+        result['api_result'] = api_result
+    except Exception as e:
+        result['error'] = str(e)
+    print(json.dumps(result))
+    
+
 def _go_auth():
     """
     Handles Authorizing a Twitter User
+    This will generate the access token and secret for the user.
+
+    Usage:
+        python tweet_helper.py -a AUTH
+
+    Follow the instructions to visit twitter, authorize the app,
+    and paste the PIN into the terminal window.
     """
     twitterApp = twython.Twython(API_KEY, API_SECRET)
     auth = twitterApp.get_authentication_tokens()
@@ -120,7 +135,8 @@ def _go_auth():
 
 def _go_verify():
     """
-    Verifies Credentials
+    Verifies Credentials.
+    This will raise an error if anything goes wrong.
     """
     twitterUser = new_TwitterUserClient()
     api_result = twitterUser.verify_credentials()
@@ -129,7 +145,8 @@ def _go_verify():
 
 def _go_tweet(message):
     """
-    Tweet a message
+    Tweet a message.
+    This will raise an error if anything goes wrong.
     """
     if len(message) > 240:
         raise ValueError("message must be 240 chars or less")

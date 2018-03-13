@@ -23,6 +23,7 @@ class TestsSetup(unittest.TestCase):
         self.assertIsNotNone(tweet_helper.USER_TOKEN)
         self.assertIsNotNone(tweet_helper.USER_SECRET)
 
+
 class TestsPythonApi(unittest.TestCase):
     """testing a tweet is not supported, because it will go live to twitter
     """
@@ -53,6 +54,10 @@ class TestsPythonApi(unittest.TestCase):
 class TestsCommandlineApi(unittest.TestCase):
     """testing a tweet is not supported, because it will go live to twitter
     """
+
+    def test_auth(self):
+        """not sure how to test this, since it is interactive"""
+        raise unittest.SkipTest("not tested")
 
     def test_invalid_user(self):
         "validate a BAD user"

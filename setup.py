@@ -21,7 +21,7 @@ setup(
     author='Jonathan Vanasco',
     author_email='jonathan@findmeon.com',
     version=VERSION,
-    url='',
+    url='https://github.com/jvanasco/tweet_helper',
     py_modules=['tweet_helper'],
     description='core settings',
     long_description=README,
