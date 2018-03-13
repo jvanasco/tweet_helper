@@ -1,4 +1,22 @@
-This is designed to quickly tweet things.
+About
+==========
+
+This package is designed to quickly tweet things.
+
+It was specifically designed to enable Mike Bayer of SqlAlchemy to automate tweets as part of his build/release process for SqlAlchemy.  Mike needed that functionality, and I needed to read his very important tweets.
+
+The package is a single file, which expects twitter credentials stuffed into the os environment, to wrap the Twython library.
+
+The package can be imported into a Python process for tweeting, but was designed to enable tweeting off a terminal prompt so any release process can invoke it.
+
+    python tweet_helper.py -a TWEET -m "i tweeted this off the commandline using tweet_helper"
+
+This package is pre-release and be available on PyPi once the API is locked down.
+
+Oh and yes there are tests.
+
+SETUP
+======================================
 
 Twitter requires two sets of credentials:
 
@@ -16,7 +34,7 @@ We're also going to store them in a bash file, so we can just 'source' them into
 
 To start:
 
-	cp credentials.bash_template credentials.bash
+    cp credentials.bash_template credentials.bash
 
 SETUP APPLICATION CREDENTIALS
 ==============================
@@ -36,43 +54,43 @@ You can create a user token when you create an application IF the owner will be 
 
 In the sqlalchemy example, it probably makes sense for Mike Bayer to own the application and SqlAlchemy user to tweet, so we will generate user credentials:
 
-	python tweet_helper.py -a AUTH
+    python tweet_helper.py -a AUTH
 
 This will prompt you to visit a url, with text like this:
 
-	In a web-browser, visit the following url to authorize this application:
+    In a web-browser, visit the following url to authorize this application:
 
-		https://api.twitter.com/oauth/authenticate?oauth_token=***************
+        https://api.twitter.com/oauth/authenticate?oauth_token=***************
 
-	What is the PIN code? 
-	
+    What is the PIN code? 
+    
 While logged in to twitter as the correct user, visit the URL and authorize the application.
 
 You will be presented with a PIN code. Copy/Paste that into the terminal window.
 
 You will now have this data:
 
-	============================
-	AUTH SUCCESS
-	============================
-	- Human Formatted Report -
-	    screen_name: 2xlp
-	    user_id: 14275299
-	    Access Token: ****************
-	    Access Token Secret: ************
-	- Machine Readable Formats Below -
-	 - - - - - - - - - - - - - -
-	auth = {u'oauth_token': u'************',
-			u'oauth_token_secret': u'************',
-			u'screen_name': u'2xlp',
-			u'user_id': u'14275299',
-			u'x_auth_expires': u'0'}
-	 - - - - - - - - - - - - - -
-	export TWEET_HELPER__USER_TOKEN='*****'
-	export TWEET_HELPER__USER_SECRET='*****'
-	============================
+    ============================
+    AUTH SUCCESS
+    ============================
+    - Human Formatted Report -
+        screen_name: 2xlp
+        user_id: 14275299
+        Access Token: ****************
+        Access Token Secret: ************
+    - Machine Readable Formats Below -
+     - - - - - - - - - - - - - -
+    auth = {u'oauth_token': u'************',
+            u'oauth_token_secret': u'************',
+            u'screen_name': u'2xlp',
+            u'user_id': u'14275299',
+            u'x_auth_expires': u'0'}
+     - - - - - - - - - - - - - -
+    export TWEET_HELPER__USER_TOKEN='*****'
+    export TWEET_HELPER__USER_SECRET='*****'
+    ============================
 
-Copy/Paste the two `export`	 lines into our "credentials" file to overwrite the default null values
+Copy/Paste the two `export`  lines into our "credentials" file to overwrite the default null values
 
 You are done!
 
@@ -87,19 +105,19 @@ Two steps
 
 Which look like:
 
-	source credentials.bash
-	python tweet_helper.py -a VERIFY
+    source credentials.bash
+    python tweet_helper.py -a VERIFY
 
 If the credentials don't work, you'll see the following:
 
-	{'status': 'error', 'error': 'Twitter API returned a 400 (Bad Request), Bad Authentication data.'}
+    {'status': 'error', 'error': 'Twitter API returned a 400 (Bad Request), Bad Authentication data.'}
 
 Notice how that's JSON? Yep, you can parse it.
 
 If the credentials work, the payload will be:
 
-	{'status': 'success', 'api_result': {}, }
-	
+    {'status': 'success', 'api_result': {}, }
+    
 The value of `api_result` will be the api result of twitter's validation, which is twitter profile data for the authenticating user.
 
 
@@ -109,18 +127,18 @@ TWEET SOMETHING ON THE COMMANDLINE
 
 You can now tweet something off the commandline
 
-	source credentials.bash
-	python tweet_helper.py -a TWEET -m "test yes it is a test http://example.com 'punctuation' \"other punctuation\""
+    source credentials.bash
+    python tweet_helper.py -a TWEET -m "test yes it is a test http://example.com 'punctuation' \"other punctuation\""
 
 On failure, an error is raised by Twython:
 
-	{'status': 'error', 'error': 'Twitter API returned a 400 (Bad Request), Bad Authentication data.'}
+    {'status': 'error', 'error': 'Twitter API returned a 400 (Bad Request), Bad Authentication data.'}
 
 Notice how that's JSON? Yep, you can parse it.
 
 On success, we'll see:
 
-	{'status': 'success', 'api_result': {}, }
+    {'status': 'success', 'api_result': {}, }
 
 The value of `api_result` will be the twitter api response for UPDATE STATUS which is a dict representing the newly formed tweet.
 
@@ -131,14 +149,14 @@ TWEET SOMETHING FROM AN APP
 
 If you'd like to tweet from an app...
 
-	from tweet_helper import api_tweet
+    from tweet_helper import api_tweet
 
-	api_tweet(message="Tweet me!")
+    api_tweet(message="Tweet me!")
 
 If you want more control...
 
-	from tweet_helper import new_TwitterUserClient
+    from tweet_helper import new_TwitterUserClient
 
-	twitterUser = new_TwitterUserClient()
-	twitterUser.update_status(status="Tweet me!")
+    twitterUser = new_TwitterUserClient()
+    twitterUser.update_status(status="Tweet me!")
 
