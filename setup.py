@@ -40,4 +40,7 @@ setup(
         "Intended Audience :: Developers",
     ],
     license='MIT',
+    # scripts=['tweet_helper.py'],  # this works, but creates a tweet_helper.py ; we can lose the .py if we use an entrypoint to create the shim
+    entry_points = {'console_scripts': ['tweet_helper=tweet_helper:go_commandline'],
+                    },
 )

@@ -42,11 +42,19 @@ Python 3
     pip3 install tweet_helper
 
 
-OR just download the file and invoke it as you wish.
+OR just download the file and invoke it as you wish. That might be easier in some situations. HOWEVER
 
-That might be easier in some situations.
+Installing the package via pip/etc will install a console script entrypoint into your (virtualenv's) /bin named `tweet_helper`
 
+So instead of doing...
 
+	python tweet_helper.py -a VERIFY
+
+you can invoke it as
+
+	tweet_helper -a VERIFY
+
+Isn't that handy?
 	
 SETUP
 ======================================
@@ -223,4 +231,3 @@ TODO
 ================================
 
 [] Tests for the authentication flow.
-[] A bin or some trick to fake the `tweet_helper` executable into a user's path.
