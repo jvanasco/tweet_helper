@@ -18,10 +18,13 @@ import twython
 #
 # docs are available on https://github.com/jvanasco/tweet_helper
 #
-__VERSION__ = '0.0.1'
+__VERSION__ = '0.0.2'
 
+# API_KEY and API_SECRET correspond to a twitter Application you create on https://apps.twitter.com
 API_KEY = os.getenv('TWEET_HELPER__API_KEY', None)
 API_SECRET = os.getenv('TWEET_HELPER__API_SECRET', None)
+
+# USER_TOKEN and USER_SECRET are generated via Authorization to the API Application `python tweet_helper.py -a AUTH`
 USER_TOKEN = os.getenv('TWEET_HELPER__USER_TOKEN', None)
 USER_SECRET = os.getenv('TWEET_HELPER__USER_SECRET', None)
 

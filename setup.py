@@ -23,7 +23,7 @@ setup(
     version=VERSION,
     url='https://github.com/jvanasco/tweet_helper',
     py_modules=['tweet_helper'],
-    description='core settings',
+    description='twython wrapper to simplify tweeting from the commandline',
     long_description=README,
     zip_safe=False,
     keywords="",
@@ -35,7 +35,8 @@ setup(
         'future',  # used to standardize `input`
     ],
     classifiers=[
-        'Programming Language :: Python',
+        'Programming Language :: Python :: 2.7',
+        'Programming Language :: Python :: 3',
         "Intended Audience :: Developers",
     ],
     license='MIT',
