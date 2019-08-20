@@ -32,7 +32,7 @@ setup(
     include_package_data=True,
     install_requires=[
         'twython',
-        'future',  # used to standardize `input`
+        'certifi',
     ],
     classifiers=[
         'Programming Language :: Python :: 2.7',

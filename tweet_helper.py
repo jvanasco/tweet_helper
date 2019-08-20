@@ -18,7 +18,7 @@ import twython
 #
 # docs are available on https://github.com/jvanasco/tweet_helper
 #
-__VERSION__ = '0.0.3'
+__VERSION__ = '0.0.4'
 
 # API_KEY and API_SECRET correspond to a twitter Application you create on https://apps.twitter.com
 API_KEY = os.getenv('TWEET_HELPER__API_KEY', None)
@@ -81,7 +81,7 @@ def _print_jsonified_api_result(api_call, *args):
     except Exception as e:
         result['error'] = str(e)
     print(json.dumps(result))
-    
+
 
 def _go_auth():
     """
