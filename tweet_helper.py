@@ -6,6 +6,7 @@ import argparse
 import json
 import os
 import pprint
+
 # import sys
 
 # pypi
@@ -18,15 +19,15 @@ import twython
 #
 # docs are available on https://github.com/jvanasco/tweet_helper
 #
-__VERSION__ = '0.0.4'
+__VERSION__ = "0.0.4"
 
 # API_KEY and API_SECRET correspond to a twitter Application you create on https://apps.twitter.com
-API_KEY = os.getenv('TWEET_HELPER__API_KEY', None)
-API_SECRET = os.getenv('TWEET_HELPER__API_SECRET', None)
+API_KEY = os.getenv("TWEET_HELPER__API_KEY", None)
+API_SECRET = os.getenv("TWEET_HELPER__API_SECRET", None)
 
 # USER_TOKEN and USER_SECRET are generated via Authorization to the API Application `python tweet_helper.py -a AUTH`
-USER_TOKEN = os.getenv('TWEET_HELPER__USER_TOKEN', None)
-USER_SECRET = os.getenv('TWEET_HELPER__USER_SECRET', None)
+USER_TOKEN = os.getenv("TWEET_HELPER__USER_TOKEN", None)
+USER_SECRET = os.getenv("TWEET_HELPER__USER_SECRET", None)
 
 # ==============================================================================
 
@@ -39,31 +40,25 @@ def go_commandline():
         python tweet_helper.py -a VERIFY
         python tweet_helper.py -a TWEET -m 'i tweeted this off the commandline using tweet_helper!'
     """
-    _valid_actions = ('AUTH', 'VERIFY', 'TWEET')
-    parser = argparse.ArgumentParser(description='Twitter Commandline Interface')
-    parser.add_argument('-a',
-                        '--action',
-                        type=str,
-                        help='What action? %s' % str(_valid_actions)
-                        )
-    parser.add_argument('-m',
-                        '--message',
-                        type=str,
-                        help='What message? %s'
-                        )
+    _valid_actions = ("AUTH", "VERIFY", "TWEET")
+    parser = argparse.ArgumentParser(description="Twitter Commandline Interface")
+    parser.add_argument(
+        "-a", "--action", type=str, help="What action? %s" % str(_valid_actions)
+    )
+    parser.add_argument("-m", "--message", type=str, help="What message? %s")
     args = parser.parse_args()
     if not args.action or (args.action not in _valid_actions):
         raise ValueError("Missing or invalid `action`")
-    if args.action == 'TWEET':
+    if args.action == "TWEET":
         if not args.message:
             raise ValueError("Missing message for `TWEET`")
 
-    if args.action == 'AUTH':
+    if args.action == "AUTH":
         # this is not a json wrapped result.
         _go_auth()
-    elif args.action == 'VERIFY':
+    elif args.action == "VERIFY":
         _print_jsonified_api_result(_go_verify)
-    elif args.action == 'TWEET':
+    elif args.action == "TWEET":
         _print_jsonified_api_result(_go_tweet, args.message)
     else:
         raise ValueError("unsupported")
@@ -76,10 +71,10 @@ def _print_jsonified_api_result(api_call, *args):
     result = new_JsonResult()
     try:
         api_result = api_call(*args)
-        result['status'] = 'success'
-        result['api_result'] = api_result
+        result["status"] = "success"
+        result["api_result"] = api_result
     except Exception as e:
-        result['error'] = str(e)
+        result["error"] = str(e)
     print(json.dumps(result))
 
 
@@ -106,33 +101,35 @@ def _go_auth():
     print("")
     print("In a web-browser, visit the following url to authorize this application:")
     print("")
-    print("\t%s" % auth['auth_url'])
+    print("\t%s" % auth["auth_url"])
     print("")
     oauth_verifier = input("What is the PIN code? ")
     oauth_verifier = oauth_verifier.strip()
-    twitterUser = twython.Twython(API_KEY, API_SECRET, auth['oauth_token'], auth['oauth_token_secret'])
+    twitterUser = twython.Twython(
+        API_KEY, API_SECRET, auth["oauth_token"], auth["oauth_token_secret"]
+    )
     credentials = twitterUser.get_authorized_tokens(oauth_verifier)
 
     print("============================")
     print("AUTH SUCCESS")
     print("============================")
     print(" - Human Formatted Report -")
-    print("\tscreen_name: %s" % credentials['screen_name'])
-    print("\tuser_id: %s" % credentials['user_id'])
-    print("\tAccess Token: %s" % credentials['oauth_token'])
-    print("\tAccess Token Secret: %s" % credentials['oauth_token_secret'])
+    print("\tscreen_name: %s" % credentials["screen_name"])
+    print("\tuser_id: %s" % credentials["user_id"])
+    print("\tAccess Token: %s" % credentials["oauth_token"])
+    print("\tAccess Token Secret: %s" % credentials["oauth_token_secret"])
     print(" - Machine Readable Formats Below -")
     print(" - - - - - - - - - - - - - -")
-    _credentials = ("auth = %s" % pprint.pformat(credentials)).split('\n')
+    _credentials = ("auth = %s" % pprint.pformat(credentials)).split("\n")
     for _idx, _line in enumerate(_credentials):
         if _idx == 0:
             continue
-        _credentials[_idx] = '       ' + _line
-    _credentials = '\n'.join(_credentials)
+        _credentials[_idx] = "       " + _line
+    _credentials = "\n".join(_credentials)
     print(_credentials)
     print(" - - - - - - - - - - - - - -")
-    print("export TWEET_HELPER__USER_TOKEN='%s'" % credentials['oauth_token'])
-    print("export TWEET_HELPER__USER_SECRET='%s'" % credentials['oauth_token_secret'])
+    print("export TWEET_HELPER__USER_TOKEN='%s'" % credentials["oauth_token"])
+    print("export TWEET_HELPER__USER_SECRET='%s'" % credentials["oauth_token_secret"])
     print("============================")
 
 
@@ -162,13 +159,15 @@ def _go_tweet(message):
 
 
 def new_JsonResult():
-    return {'status': 'error', }
+    return {"status": "error"}
 
 
 def new_TwitterUserClient():
     """generates a new Twython client for the user"""
     if not all((API_KEY, API_SECRET, USER_TOKEN, USER_SECRET)):
-        raise ValueError("Must set all of: API_KEY, API_SECRET, USER_TOKEN, USER_SECRET")
+        raise ValueError(
+            "Must set all of: API_KEY, API_SECRET, USER_TOKEN, USER_SECRET"
+        )
     twitterUser = twython.Twython(API_KEY, API_SECRET, USER_TOKEN, USER_SECRET)
     return twitterUser
 
@@ -183,5 +182,5 @@ def api_tweet(message):
 # ==============================================================================
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     go_commandline()

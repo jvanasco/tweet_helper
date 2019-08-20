@@ -9,7 +9,7 @@ with open(
             os.path.dirname(__file__),
             'tweet_helper.py')) as v_file:
     VERSION = re.compile(
-        r".*__VERSION__ = '(.*?)'",
+        r".*__VERSION__ = \"(.*?)\"",
         re.S).match(v_file.read()).group(1)
 
 here = os.path.abspath(os.path.dirname(__file__))

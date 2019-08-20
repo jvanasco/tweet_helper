@@ -15,7 +15,6 @@ import tweet_helper
 
 
 class TestsSetup(unittest.TestCase):
-
     def test_environment(self):
         "make sure we have all the environment vars set"
         self.assertIsNotNone(tweet_helper.API_KEY)
@@ -42,7 +41,7 @@ class TestsPythonApi(unittest.TestCase):
         "generate a BAD user"
         try:
             og_USER_SECRET = tweet_helper.USER_SECRET
-            tweet_helper.USER_SECRET = 'xxxx'
+            tweet_helper.USER_SECRET = "xxxx"
             twitterUser = tweet_helper.new_TwitterUserClient()
             self.assertRaises(twython.TwythonAuthError, twitterUser.verify_credentials)
         except:
@@ -63,10 +62,12 @@ class TestsCommandlineApi(unittest.TestCase):
         "validate a BAD user"
         try:
             og_USER_SECRET = tweet_helper.USER_SECRET
-            os.environ["TWEET_HELPER__USER_SECRET"] = 'xxxx'
-            result = subprocess.check_output(["python", "tweet_helper.py", "-a", "VERIFY"]).strip()
+            os.environ["TWEET_HELPER__USER_SECRET"] = "xxxx"
+            result = subprocess.check_output(
+                ["python", "tweet_helper.py", "-a", "VERIFY"]
+            ).strip()
             result_parsed = json.loads(result)
-            self.assertEqual(result_parsed['status'], 'error')
+            self.assertEqual(result_parsed["status"], "error")
         except:
             raise
         finally:
@@ -74,6 +75,8 @@ class TestsCommandlineApi(unittest.TestCase):
 
     def test_valid_user(self):
         "validate a GOOD user"
-        result = subprocess.check_output(["python", "tweet_helper.py", "-a", "VERIFY"]).strip()
+        result = subprocess.check_output(
+            ["python", "tweet_helper.py", "-a", "VERIFY"]
+        ).strip()
         result_parsed = json.loads(result)
-        self.assertEqual(result_parsed['status'], 'success')
+        self.assertEqual(result_parsed["status"], "success")

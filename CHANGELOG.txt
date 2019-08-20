@@ -1,4 +1,4 @@
-v0.0.4 - removed requirements.txt
+v0.0.4 - removed requirements.txt; black formatting
 v0.0.3 - adding to /bin
 v0.0.2 - some inline docs added, set pypi description
 v0.0.1 - Initial Release
