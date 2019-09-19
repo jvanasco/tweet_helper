@@ -1,3 +1,4 @@
+v0.0.5dev - black
 v0.0.4 - removed requirements.txt; black formatting
 v0.0.3 - adding to /bin
 v0.0.2 - some inline docs added, set pypi description

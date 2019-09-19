@@ -19,7 +19,7 @@ import twython
 #
 # docs are available on https://github.com/jvanasco/tweet_helper
 #
-__VERSION__ = "0.0.4"
+__VERSION__ = "0.0.5-dev"
 
 # API_KEY and API_SECRET correspond to a twitter Application you create on https://apps.twitter.com
 API_KEY = os.getenv("TWEET_HELPER__API_KEY", None)
