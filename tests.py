@@ -24,8 +24,7 @@ class TestsSetup(unittest.TestCase):
 
 
 class TestsPythonApi(unittest.TestCase):
-    """testing a tweet is not supported, because it will go live to twitter
-    """
+    """testing a tweet is not supported, because it will go live to twitter"""
 
     def test_generates_user(self):
         "generate a user"
@@ -51,8 +50,7 @@ class TestsPythonApi(unittest.TestCase):
 
 
 class TestsCommandlineApi(unittest.TestCase):
-    """testing a tweet is not supported, because it will go live to twitter
-    """
+    """testing a tweet is not supported, because it will go live to twitter"""
 
     def test_auth(self):
         """not sure how to test this, since it is interactive"""
