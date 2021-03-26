@@ -31,16 +31,36 @@ USER_SECRET = os.getenv("TWEET_HELPER__USER_SECRET", None)
 
 # ==============================================================================
 
+TEMPLATE_CREDENTIALS = """\
+# ------------------------------------------------------------------------------
+#
+# save this file as `credentials.bash`
+#
+
+# this is available on https://apps.twitter.com
+# you must create an account first
+export TWEET_HELPER__API_KEY=''
+export TWEET_HELPER__API_SECRET=''
+
+# the owner of an application can create their own token on https://apps.twitter.com
+# otherwise, follow the instructions in the readme
+export TWEET_HELPER__USER_TOKEN=''
+export TWEET_HELPER__USER_SECRET=''
+
+# ------------------------------------------------------------------------------
+"""
+
 
 def go_commandline():
     """
     The commandline interface.
     EXAMPLES:
+        python tweet_helper.py -a NEW_CREDENTIALS
         python tweet_helper.py -a AUTH
         python tweet_helper.py -a VERIFY
         python tweet_helper.py -a TWEET -m 'i tweeted this off the commandline using tweet_helper!'
     """
-    _valid_actions = ("AUTH", "VERIFY", "TWEET")
+    _valid_actions = ("AUTH", "VERIFY", "TWEET", "NEW_CREDENTIALS")
     parser = argparse.ArgumentParser(description="Twitter Commandline Interface")
     parser.add_argument(
         "-a", "--action", type=str, help="What action? %s" % str(_valid_actions)
@@ -48,7 +68,10 @@ def go_commandline():
     parser.add_argument("-m", "--message", type=str, help="What message? %s")
     args = parser.parse_args()
     if not args.action or (args.action not in _valid_actions):
-        raise ValueError("Missing or invalid `action`")
+        raise ValueError(
+            "Missing or invalid 'action' as `-a`. Must be one of: %s"
+            % str(_valid_actions)
+        )
     if args.action == "TWEET":
         if not args.message:
             raise ValueError("Missing message for `TWEET`")
@@ -60,6 +83,8 @@ def go_commandline():
         _print_jsonified_api_result(_go_verify)
     elif args.action == "TWEET":
         _print_jsonified_api_result(_go_tweet, args.message)
+    elif args.action == "NEW_CREDENTIALS":
+        print(TEMPLATE_CREDENTIALS)
     else:
         raise ValueError("unsupported")
 

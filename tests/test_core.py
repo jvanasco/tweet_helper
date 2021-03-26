@@ -62,7 +62,7 @@ class TestsCommandlineApi(unittest.TestCase):
             og_USER_SECRET = tweet_helper.USER_SECRET
             os.environ["TWEET_HELPER__USER_SECRET"] = "xxxx"
             result = subprocess.check_output(
-                ["python", "tweet_helper.py", "-a", "VERIFY"]
+                ["python", "src/tweet_helper.py", "-a", "VERIFY"]
             ).strip()
             result_parsed = json.loads(result)
             self.assertEqual(result_parsed["status"], "error")
@@ -74,7 +74,7 @@ class TestsCommandlineApi(unittest.TestCase):
     def test_valid_user(self):
         "validate a GOOD user"
         result = subprocess.check_output(
-            ["python", "tweet_helper.py", "-a", "VERIFY"]
+            ["python", "src/tweet_helper.py", "-a", "VERIFY"]
         ).strip()
         result_parsed = json.loads(result)
         self.assertEqual(result_parsed["status"], "success")
