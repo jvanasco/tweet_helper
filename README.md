@@ -1,3 +1,16 @@
+IMPORTANT NOTE
+==============
+
+This package is longer actively maintained as of 2022.
+
+Please, do not use this package for new projects.
+
+This package was originally designed to enable announcements on Twitter from the automatic SqlAlchemy.org build/release process.
+
+In 2022, Twitter was purchased by a private individual. Over the next few months, the new owner gutted the labor force and product features, removed essentially all of the Trust & Safety policies, and even went to rebranding the company and shifting focus.  This led to many people dropping the platform - especially amongst the core target audience of this package's purpose.  There are now much better avenues to make announcements for software releases.
+
+Due to the decline of potential utility for this project, and highly problematic decisions by the Twitter ownership, the maintainer of this project has no plans to support the Twitter ecosystem in any manner.
+
 About
 ==========
 
